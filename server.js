@@ -19,7 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(routes);
-app.use(logger("dev"))
+console.log(routes)
+app.use(logger("dev"));
 
 app.use(express.static("public"));
 

@@ -3,15 +3,19 @@ const db = require("../models")
 module.exports = {
 
     findArticleById: function (req, res){
+        
         console.log("Finding article by id...");
+
+
         db.Article
-            .find(req.params.id)
+            .findById({ _id: req.params.id})
             .populate("comment")
             .then(dbModel => res.json(dbModel))
-            .catch(err => res.status(422).json(err))
+            .catch(err => res.status(422).json(err).send("error"))
     },
 
     saveScrape: function (req, res) {
+
         if (req.body.headline &&
             req.body.summary && 
             req.body.link) {
@@ -56,8 +60,13 @@ module.exports = {
 
             db.Comment
                 .create(newComment)
-                .then(dbModel => db.Article.findOneAndUpdate({ _id: article }, { comment: dbModel._id }, { new: true }))
-                .then(dbModel => res.json(dbModel))
+                .then(function (dbComment) {
+                    return db.Article.findOneAndUpdate({ _id: req.params.id }, { comment: dbComment._id }, { new: true });
+                })
+                .then( function (dbArticle){
+                    res.json(dbArticle);
+                })
+                .then(res.send("Comment added."))
                 .catch(err => res.status(422).json(err))
         
                 
@@ -74,6 +83,7 @@ module.exports = {
             .findById({ _id: req.params.id})
             .then(dbModel => dbModel.remove())
             .then(dbModel => res.json(dbModel))
+            .then(res.send("Article deleted."))
             .catch(err => res.status(422).json(err))
     },
 
@@ -85,6 +95,7 @@ module.exports = {
             .findById({ _id: req.params.id})
             .then(dbModel => dbModel.remove())
             .then(dbModel => res.json(dbModel))
+            .then(res.send("Comment deleted."))
             .catch(err => res.status(422).json(err))
     },
 

@@ -2,7 +2,7 @@ const router = require("express").Router();
 const articleController = require("../controllers/articleController")
 
 
-router.get("/:id")
+router.route("/:id")
     .post(articleController.addComment)
     .delete(articleController.deleteComment)
 
