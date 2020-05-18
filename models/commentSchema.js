@@ -13,10 +13,11 @@ const CommentSchema = new Schema ({
         required: true, 
     },
 
-    articleId: {
+    article: {
         type: String,
         required: true, 
     }
+
 });
 
 
